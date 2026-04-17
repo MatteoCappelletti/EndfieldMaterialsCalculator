@@ -1,0 +1,28 @@
+[
+    {
+        "name" : "nome_bello",
+        "rarity" : 6,
+        "basetier_flower_name" : "fiorellino_carino T1",
+        "lowtier_flower_name" : "fiorellino_carino T2",
+        "midtier_flower_name" : "fiorellino_carino T3",
+        "hightier_flower_name" : "fiorellino_carino T4",
+        "basetier_branch_name" : "ramoscello_stupendino T1",
+        "lowtier_branch_name" : "ramoscello_stupendino T2",
+        "midtier_branch_name" : "ramoscello_stupendino T3",
+        "hightier_branch_name" : "ramoscello_stupendino T4",
+        "gold_item_name" : "oggetto_doratino"
+    },
+    {
+        "name" : "nome_bello2",
+        "rarity" : 5,
+        "basetier_flower_name" : "fiorellino_carino T1",
+        "lowtier_flower_name" : "fiorellino_carino T2",
+        "midtier_flower_name" : "fiorellino_carino T3",
+        "hightier_flower_name" : "fiorellino_carino T4",
+        "basetier_branch_name" : "ramoscello_stupendino T1",
+        "lowtier_branch_name" : "ramoscello_stupendino T2",
+        "midtier_branch_name" : "ramoscello_stupendino T3",
+        "hightier_branch_name" : "ramoscello_stupendino T4",
+        "gold_item_name" : "oggetto_doratino"
+    }
+]
