@@ -1,37 +1,12 @@
+import tkinter
+from tkinter import ttk
 import json
 from models.character import Character
-from models.ascension import Ascension
-from models.levelrange import LevelRange
-from models.skill import Skill
+from models.ascension import ASCENSIONS
+from models.levelrange import LEVEL_RANGES
+from models.skill import SKILLS
+from models.talent import COMBAT_TALENTS, SPACESHIP_TALENTS
 
-ASCENSIONS = [
-    Ascension(1600, 8, 0, 3, 0),
-    Ascension(6500, 25, 0, 5, 0),
-    Ascension(18000, 0, 24, 5, 0),
-    Ascension(100000, 0, 36, 8, 20)
-]
-
-LEVEL_RANGES = [
-    LevelRange(820, 5, 2, 2, 0, 0),
-    LevelRange(12540, 3, 8, 24, 0, 0),
-    LevelRange(23900, 4, 5, 47, 0, 0),
-    LevelRange(131890, 0, 0, 0, 7, 56),
-    LevelRange(252930, 0, 0, 0, 7, 61)
-]
-
-SKILLS = [
-    Skill(1000, 6, 0, 1, 0, 0),
-    Skill(2700, 12, 0, 2, 0, 0),
-    Skill(3200, 16, 0, 1, 0, 0),
-    Skill(4200, 21, 0, 1, 0, 0),
-    Skill(5400, 27, 0, 2, 0, 0),
-    Skill(8200, 0, 6, 1, 0, 0),
-    Skill(10500, 0, 8, 1, 0, 0),
-    Skill(18000, 0, 15, 2, 0, 0),
-    Skill(24000, 0, 15, 3, 1, 6),
-    Skill(30000, 0, 24, 6, 2, 16),
-    Skill(65000, 0, 50, 12, 3, 36)
-]
 
 def characters_import() -> list:
 
@@ -80,37 +55,141 @@ def main():
 
     character = search_character(characters, user_search)
     if character is not None:
-        print(character)
+        richiesta = input("Vuoi aumentare il livello? ")
+        if richiesta == "y":
+            pass
+        richiesta = input("Vuoi aumentare le skill? ")
+        if richiesta == "y":
+            pass
+        richiesta = input("Vuoi aumentare i talenti di combattimento? ")
+        if richiesta == "y":
+            pass
+        richiesta = input("Vuoi aumentare i talenti dell'astronave? ")
+        if richiesta == "y":
+            pass
 
+def app():
+    window = tkinter.Tk()
+    window.title("Endfield Mats Calculator")
+    window.geometry("900x500")
+
+    # mats to show on screen
+
+    gold: int = 0
+    protodisk: int = 0
+    protoset: int = 0
+    flower: int = 0
+    gold_item: int = 0
+    elementary_combat_record: int = 0
+    intermediate_combat_record: int = 0
+    advanced_combat_record: int = 0
+    elementary_cognitive_carrier: int = 0
+    advanced_cognitive_carrier: int = 0
+
+    # character levels
+
+    level_options = ["1", "20", "20+", "40", "40+", "60", "60+", "80", "80+", "90"]
+
+    actual_level_label = tkinter.Label(window, text="Seleziona il tuo livello attuale e finale:")
+    actual_level_label.grid(row=0, column=0, padx=10, pady=10)
+
+    actual_level_combobox = ttk.Combobox(window, values=level_options, state="readonly")
+    actual_level_combobox.grid(row=0, column=1, padx=10, pady=10)
+    actual_level_combobox.current(0)
+
+    final_level_label = tkinter.Label(window, text="->")
+    final_level_label.grid(row=0, column=2, padx=10, pady=10)
+
+    final_level_combobox = ttk.Combobox(window, values=level_options, state="readonly")
+    final_level_combobox.grid(row=0, column=3, padx=10, pady=10)
+    final_level_combobox.current(len(level_options) - 1)
+
+    def level_combobox(event):
+        actual_level_scelta = actual_level_combobox.get()
+        final_level_scelta = final_level_combobox.get()
+
+        start_level = actual_level_scelta.replace("+", "")
+        final_level = final_level_scelta.replace("+", "")
+
+        for start_range_level, max_range_level, mats in LEVEL_RANGES:
+            if start_level >= start_range_level and final_level <= max_range_level:
+                # aggiungi mats range
+
+                gold += mats.gold
+                elementary_combat_record += mats.elementary_combat_record
+                intermediate_combat_record += mats.intermediate_combat_record
+                advanced_combat_record += mats.advanced_combat_record
+                elementary_cognitive_carrier += mats.elementary_cognitive_carrier
+                advanced_cognitive_carrier += mats.advanced_cognitive_carrier
+
+                if start_level == start_range_level and "+" not in actual_level_scelta:
+                    # aggiungi mats ascesion di start_range_level
+
+                    for ascension_level, ascension_mats in ASCENSIONS:
+                        if ascension_level == start_range_level:
+                            gold += ascension_mats.gold
+                            protodisk += ascension_mats.protodisk
+                            protoset += ascension_mats.protoset
+                            flower += ascension_mats.flower
+                            gold_item += ascension_mats.gold_item
+                            break
+
+                elif final_level == max_range_level and "+" in final_level_scelta:
+                    # aggiungi mats ascension di max_range_level
+
+                    for ascension_level, ascension_mats in ASCENSIONS:
+                        if ascension_level == max_range_level:
+                            gold += ascension_mats.gold
+                            protodisk += ascension_mats.protodisk
+                            protoset += ascension_mats.protoset
+                            flower += ascension_mats.flower
+                            gold_item += ascension_mats.gold_item
+                            break
+
+                elif start_level > start_range_level and final_level < max_range_level:
+                    # aggiungi mats ascension di start_range_vel
+
+                    for ascension_level, ascension_mats in ASCENSIONS:
+                        if ascension_level == start_range_level:
+                            gold += ascension_mats.gold
+                            protodisk += ascension_mats.protodisk
+                            protoset += ascension_mats.protoset
+                            flower += ascension_mats.flower
+                            gold_item += ascension_mats.gold_item
+                            break
+
+    actual_level_combobox.bind("<<ComboboxSelected>>", level_combobox)
+    final_level_combobox.bind("<<ComboboxSelected>>", level_combobox)
+
+    # skills
+
+    # talents
+
+    # show on screen
+
+    label_gold = tkinter.Label(window, text=f"{gold} gold")
+    label_gold.pack(pady = 20)
+    label_protodisk = tkinter.Label(window, text=f"{protodisk} protodisk")
+    label_protodisk.pack(pady = 20)
+    label_protoset = tkinter.Label(window, text=f"{protoset} protoset")
+    label_protoset.pack(pady = 20)
+    label_flower = tkinter.Label(window, text=f"{flower} flower")
+    label_flower.pack(pady = 20)
+    label_gold_item = tkinter.Label(window, text=f"{gold_item} gold item")
+    label_gold_item.pack(pady = 20)
+    label_elementary_combat_record = tkinter.Label(window, text=f"{elementary_combat_record} elementary combat record")
+    label_elementary_combat_record.pack(pady = 20)
+    label_intermediate_combat_record = tkinter.Label(window, text=f"{intermediate_combat_record} gintermediate combat recordold")
+    label_intermediate_combat_record.pack(pady = 20)
+    label_advanced_combat_record = tkinter.Label(window, text=f"{advanced_combat_record} advanced combat record")
+    label_advanced_combat_record.pack(pady = 20)
+    label_elementary_cognitive_carrier = tkinter.Label(window, text=f"{elementary_cognitive_carrier} elementary cognitive carrier")
+    label_elementary_cognitive_carrier.pack(pady = 20)
+    label_advanced_cognitive_carrier = tkinter.Label(window, text=f"{advanced_cognitive_carrier} advanced cognitive carrier")
+    label_advanced_cognitive_carrier.pack(pady = 20)
+
+    window.mainloop()
 
 if __name__ == "__main__":
-    main()
-
-# ascensione
-# - 4 (20+, 40+, 60+, 80+)
-#   - gold
-#   - protodisk
-#   - protoset
-#   - flower (variable)
-#   - 5* item (variable)
-# range livello
-# - 5 (1-20, 20-40, 40-60, 60-80, 80-90)
-#   - gold
-#   - libretto lv1
-#   - libretto lv2
-#   - libretto lv3
-#   - libretto lv4
-#   - libretto lv5
-# skill
-# - 12 (1, 2, 3, 4, ... 11, 12)
-#   - gold
-#   - protoprism
-#   - protohedron
-#   - flower (variable)
-#   - perseverance mark (variable)
-#   - 5* item (variable)
-# talent
-# - 8
-#   - gold
-#   - protoprism
-#   - protohedron
+    # main()
+    app()
