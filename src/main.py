@@ -110,6 +110,95 @@ def app():
         elementary_cognitive_carrier = 0
         advanced_cognitive_carrier = 0
 
+    # mats labels
+
+    label_gold = tkinter.Label(
+        window, text=f"{gold} gold")
+    label_protodisk = tkinter.Label(
+        window, text=f"{protodisk} protodisk")
+    label_protoset = tkinter.Label(
+        window, text=f"{protoset} protoset")
+    label_flower = tkinter.Label(
+        window, text=f"{flower} flower")
+    label_gold_item = tkinter.Label(
+        window, text=f"{gold_item} gold item")
+    label_elementary_combat_record = tkinter.Label(
+        window, text=f"{elementary_combat_record} elementary combat record")
+    label_intermediate_combat_record = tkinter.Label(
+        window, text=f"{intermediate_combat_record} gintermediate combat recordold")
+    label_advanced_combat_record = tkinter.Label(
+        window, text=f"{advanced_combat_record} advanced combat record")
+    label_elementary_cognitive_carrier = tkinter.Label(
+        window, text=f"{elementary_cognitive_carrier} elementary cognitive carrier")
+    label_advanced_cognitive_carrier = tkinter.Label(
+        window, text=f"{advanced_cognitive_carrier} advanced cognitive carrier")
+
+    def forget_mats_labels():
+        label_gold.grid_forget()
+        label_protodisk.grid_forget()
+        label_protoset.grid_forget()
+        label_flower.grid_forget()
+        label_gold_item.grid_forget()
+        label_elementary_combat_record.grid_forget()
+        label_intermediate_combat_record.grid_forget()
+        label_advanced_combat_record.grid_forget()
+        label_elementary_cognitive_carrier.grid_forget()
+        label_advanced_cognitive_carrier.grid_forget()
+
+    def reload_mats():
+
+        initial_show_row = 1
+        if gold != 0:
+            label_gold.config(text=f"{gold} gold")
+            label_gold.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if protodisk != 0:
+            initial_show_row += 1
+            label_protodisk.config(text=f"{protodisk} protodisk")
+            label_protodisk.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if protoset != 0:
+            initial_show_row += 1
+            label_protoset.config(text=f"{protoset} protoset")
+            label_protoset.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if flower != 0:
+            initial_show_row += 1
+            label_flower.config(text=f"{flower} flower")
+            label_flower.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if gold_item != 0:
+            initial_show_row += 1
+            label_gold_item.config(text=f"{gold_item} gold item")
+            label_gold_item.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if elementary_combat_record != 0:
+            initial_show_row += 1
+            label_elementary_combat_record.config(text=f"{elementary_combat_record} elementary combat record")
+            label_elementary_combat_record.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if intermediate_combat_record != 0:
+            initial_show_row += 1
+            label_intermediate_combat_record.config(text=f"{intermediate_combat_record} intermediate combat recordold")
+            label_intermediate_combat_record.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if advanced_combat_record != 0:
+            initial_show_row += 1
+            label_advanced_combat_record.config(text=f"{advanced_combat_record} advanced combat record")
+            label_advanced_combat_record.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if elementary_cognitive_carrier != 0:
+            initial_show_row += 1
+            label_elementary_cognitive_carrier.config(
+                text=f"{elementary_cognitive_carrier} elementary cognitive carrier"
+            )
+            label_elementary_cognitive_carrier.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if advanced_cognitive_carrier != 0:
+            initial_show_row += 1
+            label_advanced_cognitive_carrier.config(text=f"{advanced_cognitive_carrier} advanced cognitive carrier")
+            label_advanced_cognitive_carrier.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
     # character levels
 
     level_options = ["1", "20", "20+", "40", "40+", "60", "60+", "80", "80+", "90"]
@@ -128,7 +217,7 @@ def app():
     final_level_combobox.grid(row=0, column=3, padx=10, pady=10)
     final_level_combobox.current(len(level_options) - 1)
 
-    def level_combobox(event):
+    def level_combobox():
         reset_mats()
 
         actual_level_scelta = actual_level_combobox.get()
@@ -137,23 +226,39 @@ def app():
         start_level = int(actual_level_scelta.replace("+", ""))
         final_level = int(final_level_scelta.replace("+", ""))
 
+        nonlocal gold
+        nonlocal protodisk
+        nonlocal protoset
+        nonlocal flower
+        nonlocal gold_item
+        nonlocal elementary_combat_record
+        nonlocal intermediate_combat_record
+        nonlocal advanced_combat_record
+        nonlocal elementary_cognitive_carrier
+        nonlocal advanced_cognitive_carrier
+
+        if start_level == final_level and "+" not in actual_level_scelta and "+" in final_level_scelta:
+            print("just ascension")
+            for ascension_level, ascension_mats in ASCENSIONS:
+                if ascension_level == start_level:
+                    gold += ascension_mats.gold
+                    protodisk += ascension_mats.protodisk
+                    protoset += ascension_mats.protoset
+                    flower += ascension_mats.flower
+                    gold_item += ascension_mats.gold_item
+                    break
+
         for start_range_level, max_range_level, mats in LEVEL_RANGES:
             # ho aggiunto i global var perché:
             # UnboundLocalError: cannot access local variable 'gold' where it is not associated with a value
 
-            if start_level >= start_range_level and final_level <= max_range_level:
-                # aggiungi mats range
+            print(f"start for[{start_range_level}] com[{start_level}]")
+            print(f"final for[{max_range_level}] com[{final_level}]")
 
-                nonlocal gold
-                nonlocal protodisk
-                nonlocal protoset
-                nonlocal flower
-                nonlocal gold_item
-                nonlocal elementary_combat_record
-                nonlocal intermediate_combat_record
-                nonlocal advanced_combat_record
-                nonlocal elementary_cognitive_carrier
-                nonlocal advanced_cognitive_carrier
+
+            if start_level <= start_range_level and final_level >= max_range_level:
+                # aggiungi mats range
+                print("ci piace")
 
                 gold += mats.gold
                 elementary_combat_record += mats.elementary_combat_record
@@ -162,8 +267,9 @@ def app():
                 elementary_cognitive_carrier += mats.elementary_cognitive_carrier
                 advanced_cognitive_carrier += mats.advanced_cognitive_carrier
 
-                if start_level == start_range_level and "+" not in actual_level_scelta:
+                if start_level != 1 and start_level == start_range_level and "+" not in actual_level_scelta:
                     # aggiungi mats ascesion di start_range_level
+                    print("start ascension")
 
                     for ascension_level, ascension_mats in ASCENSIONS:
                         if ascension_level == start_range_level:
@@ -174,8 +280,9 @@ def app():
                             gold_item += ascension_mats.gold_item
                             break
 
-                elif final_level == max_range_level and "+" in final_level_scelta:
+                if final_level == max_range_level and "+" in final_level_scelta:
                     # aggiungi mats ascension di max_range_level
+                    print("final ascension")
 
                     for ascension_level, ascension_mats in ASCENSIONS:
                         if ascension_level == max_range_level:
@@ -186,8 +293,9 @@ def app():
                             gold_item += ascension_mats.gold_item
                             break
 
-                elif start_level > start_range_level and final_level < max_range_level:
+                if start_level < start_range_level:
                     # aggiungi mats ascension di start_range_vel
+                    print("mid ascension")
 
                     for ascension_level, ascension_mats in ASCENSIONS:
                         if ascension_level == start_range_level:
@@ -197,77 +305,22 @@ def app():
                             flower += ascension_mats.flower
                             gold_item += ascension_mats.gold_item
                             break
+            print()
+        print("-------------")
+        forget_mats_labels()
         reload_mats()
 
-    actual_level_combobox.bind("<<ComboboxSelected>>", level_combobox)
-    final_level_combobox.bind("<<ComboboxSelected>>", level_combobox)
+    # actual_level_combobox.bind("<<ComboboxSelected>>", level_combobox)
+    # final_level_combobox.bind("<<ComboboxSelected>>", level_combobox)
+
+    level_button = ttk.Button(window, text="Seleziona", command=level_combobox)
+    level_button.grid(row=0, column=4, padx=10, pady=10)
 
     # skills
 
     # talents
 
     # show on screen
-
-    def reload_mats():
-        initial_show_row = 1
-        if gold != 0:
-            label_gold = tkinter.Label(
-                window, text=f"{gold} gold")
-            label_gold.grid(row=initial_show_row, column=0, padx=100, pady=10)
-
-        if protodisk != 0:
-            initial_show_row += 1
-            label_protodisk = tkinter.Label(
-                window, text=f"{protodisk} protodisk")
-            label_protodisk.grid(row=initial_show_row, column=0, padx=100, pady=10)
-
-        if protoset != 0:
-            initial_show_row += 1
-            label_protoset = tkinter.Label(
-                window, text=f"{protoset} protoset")
-            label_protoset.grid(row=initial_show_row, column=0, padx=100, pady=10)
-
-        if flower != 0:
-            initial_show_row += 1
-            label_flower = tkinter.Label(
-                window, text=f"{flower} flower")
-            label_flower.grid(row=initial_show_row, column=0, padx=100, pady=10)
-
-        if gold_item != 0:
-            initial_show_row += 1
-            label_gold_item = tkinter.Label(
-                window, text=f"{gold_item} gold item")
-            label_gold_item.grid(row=initial_show_row, column=0, padx=100, pady=10)
-
-        if elementary_combat_record != 0:
-            initial_show_row += 1
-            label_elementary_combat_record = tkinter.Label(
-                window, text=f"{elementary_combat_record} elementary combat record")
-            label_elementary_combat_record.grid(row=initial_show_row, column=0, padx=100, pady=10)
-
-        if intermediate_combat_record != 0:
-            initial_show_row += 1
-            label_intermediate_combat_record = tkinter.Label(
-                window, text=f"{intermediate_combat_record} gintermediate combat recordold")
-            label_intermediate_combat_record.grid(row=initial_show_row, column=0, padx=100, pady=10)
-
-        if advanced_combat_record != 0:
-            initial_show_row += 1
-            label_advanced_combat_record = tkinter.Label(
-                window, text=f"{advanced_combat_record} advanced combat record")
-            label_advanced_combat_record.grid(row=initial_show_row, column=0, padx=100, pady=10)
-
-        if elementary_cognitive_carrier != 0:
-            initial_show_row += 1
-            label_elementary_cognitive_carrier = tkinter.Label(
-                window, text=f"{elementary_cognitive_carrier} elementary cognitive carrier")
-            label_elementary_cognitive_carrier.grid(row=initial_show_row, column=0, padx=100, pady=10)
-
-        if advanced_cognitive_carrier != 0:
-            initial_show_row += 1
-            label_advanced_cognitive_carrier = tkinter.Label(
-                window, text=f"{advanced_cognitive_carrier} advanced cognitive carrier")
-            label_advanced_cognitive_carrier.grid(row=initial_show_row, column=0, padx=100, pady=10)
 
     reload_mats()
 
