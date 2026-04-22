@@ -71,20 +71,44 @@ def main():
 def app():
     window = tkinter.Tk()
     window.title("Endfield Mats Calculator")
-    window.geometry("900x500")
+    window.geometry("1900x500")
+    window.columnconfigure(0, weight=1)
 
     # mats to show on screen
 
-    gold: int = 0
-    protodisk: int = 0
-    protoset: int = 0
-    flower: int = 0
-    gold_item: int = 0
-    elementary_combat_record: int = 0
-    intermediate_combat_record: int = 0
-    advanced_combat_record: int = 0
-    elementary_cognitive_carrier: int = 0
-    advanced_cognitive_carrier: int = 0
+    gold = 0
+    protodisk = 0
+    protoset = 0
+    flower = 0
+    gold_item = 0
+    elementary_combat_record = 0
+    intermediate_combat_record = 0
+    advanced_combat_record = 0
+    elementary_cognitive_carrier = 0
+    advanced_cognitive_carrier = 0
+
+    def reset_mats():
+        nonlocal gold
+        nonlocal protodisk
+        nonlocal protoset
+        nonlocal flower
+        nonlocal gold_item
+        nonlocal elementary_combat_record
+        nonlocal intermediate_combat_record
+        nonlocal advanced_combat_record
+        nonlocal elementary_cognitive_carrier
+        nonlocal advanced_cognitive_carrier
+
+        gold = 0
+        protodisk = 0
+        protoset = 0
+        flower = 0
+        gold_item = 0
+        elementary_combat_record = 0
+        intermediate_combat_record = 0
+        advanced_combat_record = 0
+        elementary_cognitive_carrier = 0
+        advanced_cognitive_carrier = 0
 
     # character levels
 
@@ -105,15 +129,31 @@ def app():
     final_level_combobox.current(len(level_options) - 1)
 
     def level_combobox(event):
+        reset_mats()
+
         actual_level_scelta = actual_level_combobox.get()
         final_level_scelta = final_level_combobox.get()
 
-        start_level = actual_level_scelta.replace("+", "")
-        final_level = final_level_scelta.replace("+", "")
+        start_level = int(actual_level_scelta.replace("+", ""))
+        final_level = int(final_level_scelta.replace("+", ""))
 
         for start_range_level, max_range_level, mats in LEVEL_RANGES:
+            # ho aggiunto i global var perché:
+            # UnboundLocalError: cannot access local variable 'gold' where it is not associated with a value
+
             if start_level >= start_range_level and final_level <= max_range_level:
                 # aggiungi mats range
+
+                nonlocal gold
+                nonlocal protodisk
+                nonlocal protoset
+                nonlocal flower
+                nonlocal gold_item
+                nonlocal elementary_combat_record
+                nonlocal intermediate_combat_record
+                nonlocal advanced_combat_record
+                nonlocal elementary_cognitive_carrier
+                nonlocal advanced_cognitive_carrier
 
                 gold += mats.gold
                 elementary_combat_record += mats.elementary_combat_record
@@ -157,6 +197,7 @@ def app():
                             flower += ascension_mats.flower
                             gold_item += ascension_mats.gold_item
                             break
+        reload_mats()
 
     actual_level_combobox.bind("<<ComboboxSelected>>", level_combobox)
     final_level_combobox.bind("<<ComboboxSelected>>", level_combobox)
@@ -167,26 +208,68 @@ def app():
 
     # show on screen
 
-    label_gold = tkinter.Label(window, text=f"{gold} gold")
-    label_gold.pack(pady = 20)
-    label_protodisk = tkinter.Label(window, text=f"{protodisk} protodisk")
-    label_protodisk.pack(pady = 20)
-    label_protoset = tkinter.Label(window, text=f"{protoset} protoset")
-    label_protoset.pack(pady = 20)
-    label_flower = tkinter.Label(window, text=f"{flower} flower")
-    label_flower.pack(pady = 20)
-    label_gold_item = tkinter.Label(window, text=f"{gold_item} gold item")
-    label_gold_item.pack(pady = 20)
-    label_elementary_combat_record = tkinter.Label(window, text=f"{elementary_combat_record} elementary combat record")
-    label_elementary_combat_record.pack(pady = 20)
-    label_intermediate_combat_record = tkinter.Label(window, text=f"{intermediate_combat_record} gintermediate combat recordold")
-    label_intermediate_combat_record.pack(pady = 20)
-    label_advanced_combat_record = tkinter.Label(window, text=f"{advanced_combat_record} advanced combat record")
-    label_advanced_combat_record.pack(pady = 20)
-    label_elementary_cognitive_carrier = tkinter.Label(window, text=f"{elementary_cognitive_carrier} elementary cognitive carrier")
-    label_elementary_cognitive_carrier.pack(pady = 20)
-    label_advanced_cognitive_carrier = tkinter.Label(window, text=f"{advanced_cognitive_carrier} advanced cognitive carrier")
-    label_advanced_cognitive_carrier.pack(pady = 20)
+    def reload_mats():
+        initial_show_row = 1
+        if gold != 0:
+            label_gold = tkinter.Label(
+                window, text=f"{gold} gold")
+            label_gold.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if protodisk != 0:
+            initial_show_row += 1
+            label_protodisk = tkinter.Label(
+                window, text=f"{protodisk} protodisk")
+            label_protodisk.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if protoset != 0:
+            initial_show_row += 1
+            label_protoset = tkinter.Label(
+                window, text=f"{protoset} protoset")
+            label_protoset.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if flower != 0:
+            initial_show_row += 1
+            label_flower = tkinter.Label(
+                window, text=f"{flower} flower")
+            label_flower.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if gold_item != 0:
+            initial_show_row += 1
+            label_gold_item = tkinter.Label(
+                window, text=f"{gold_item} gold item")
+            label_gold_item.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if elementary_combat_record != 0:
+            initial_show_row += 1
+            label_elementary_combat_record = tkinter.Label(
+                window, text=f"{elementary_combat_record} elementary combat record")
+            label_elementary_combat_record.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if intermediate_combat_record != 0:
+            initial_show_row += 1
+            label_intermediate_combat_record = tkinter.Label(
+                window, text=f"{intermediate_combat_record} gintermediate combat recordold")
+            label_intermediate_combat_record.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if advanced_combat_record != 0:
+            initial_show_row += 1
+            label_advanced_combat_record = tkinter.Label(
+                window, text=f"{advanced_combat_record} advanced combat record")
+            label_advanced_combat_record.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if elementary_cognitive_carrier != 0:
+            initial_show_row += 1
+            label_elementary_cognitive_carrier = tkinter.Label(
+                window, text=f"{elementary_cognitive_carrier} elementary cognitive carrier")
+            label_elementary_cognitive_carrier.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+        if advanced_cognitive_carrier != 0:
+            initial_show_row += 1
+            label_advanced_cognitive_carrier = tkinter.Label(
+                window, text=f"{advanced_cognitive_carrier} advanced cognitive carrier")
+            label_advanced_cognitive_carrier.grid(row=initial_show_row, column=0, padx=100, pady=10)
+
+    reload_mats()
 
     window.mainloop()
 
