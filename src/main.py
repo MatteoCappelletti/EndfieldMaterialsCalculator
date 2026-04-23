@@ -5,8 +5,7 @@ from models.character import Character
 from models.ascension import ASCENSIONS
 from models.levelrange import LEVEL_RANGES
 from models.skill import SKILLS
-from models.talent import COMBAT_TALENTS, SPACESHIP_TALENTS
-
+# from models.talent import COMBAT_TALENTS, SPACESHIP_TALENTS
 
 def characters_import() -> list:
 
@@ -27,10 +26,12 @@ def characters_import() -> list:
                 hightier_branch_name = line["hightier_branch_name"]
                 gold_item_name = line["gold_item_name"]
 
-                character = Character(name, rarity,
-                                      basetier_flower_name, lowtier_flower_name, midtier_flower_name, hightier_flower_name,
-                                      basetier_branch_name, lowtier_branch_name, midtier_branch_name, hightier_branch_name,
-                                      gold_item_name)
+                character = Character(
+                    name, rarity,
+                    basetier_flower_name, lowtier_flower_name, midtier_flower_name, hightier_flower_name,
+                    basetier_branch_name, lowtier_branch_name, midtier_branch_name, hightier_branch_name,
+                    gold_item_name
+                )
                 characters.append(character)
             except IndexError:
                 print(f"Index error: [{line}]")
@@ -42,41 +43,22 @@ def search_character(characters: list, name: str) -> Character:
             return character
     return None
 
-def main():
-    characters = characters_import()
-
-    # menu
-    # - chiedere il pg
-    #   - chiedere cosa si vuole sapere (ascension, skill, talent)
-    #     - mostrare i materiali necessari
-
-    # non chiedere all'utente, ma farlo selezionare da una lista di personaggi disponibili
-    user_search = input("Nome del pesonaggio: ")
-
-    character = search_character(characters, user_search)
-    if character is not None:
-        richiesta = input("Vuoi aumentare il livello? ")
-        if richiesta == "y":
-            pass
-        richiesta = input("Vuoi aumentare le skill? ")
-        if richiesta == "y":
-            pass
-        richiesta = input("Vuoi aumentare i talenti di combattimento? ")
-        if richiesta == "y":
-            pass
-        richiesta = input("Vuoi aumentare i talenti dell'astronave? ")
-        if richiesta == "y":
-            pass
-
 def app():
+    CHARACTER_STARTING_ROW = 0  # 1 riga richiesta
+    LEVEL_STARTING_ROW = 1      # 1
+    SKILLS_STARTING_ROW = 2     # 4
+    CALC_BUTTON_ROW = 6         # 1
+    RESULTS_STARTING_ROW = 7    # N calcolato
+
     window = tkinter.Tk()
     window.title("Endfield Mats Calculator")
-    window.geometry("1900x500")
+    window.geometry("1600x1000")
     window.columnconfigure(0, weight=1)
 
-    # mats to show on screen
+    # all mats variables
 
-    gold = 0
+    gold_from_level = 0
+    gold_from_skill = 0
     protodisk = 0
     protoset = 0
     flower = 0
@@ -86,9 +68,13 @@ def app():
     advanced_combat_record = 0
     elementary_cognitive_carrier = 0
     advanced_cognitive_carrier = 0
+    protoprism = 0
+    protohedron = 0
+    perseverance_mask = 0
 
     def reset_mats():
-        nonlocal gold
+        nonlocal gold_from_level
+        nonlocal gold_from_skill
         nonlocal protodisk
         nonlocal protoset
         nonlocal flower
@@ -98,8 +84,12 @@ def app():
         nonlocal advanced_combat_record
         nonlocal elementary_cognitive_carrier
         nonlocal advanced_cognitive_carrier
+        nonlocal protoprism
+        nonlocal protohedron
+        nonlocal perseverance_mask
 
-        gold = 0
+        gold_from_level = 0
+        gold_from_skill = 0
         protodisk = 0
         protoset = 0
         flower = 0
@@ -109,116 +99,123 @@ def app():
         advanced_combat_record = 0
         elementary_cognitive_carrier = 0
         advanced_cognitive_carrier = 0
+        protoprism = 0
+        protohedron = 0
+        perseverance_mask = 0
 
     # mats labels
 
-    label_gold = tkinter.Label(
-        window, text=f"{gold} gold")
-    label_protodisk = tkinter.Label(
-        window, text=f"{protodisk} protodisk")
-    label_protoset = tkinter.Label(
-        window, text=f"{protoset} protoset")
-    label_flower = tkinter.Label(
-        window, text=f"{flower} flower")
-    label_gold_item = tkinter.Label(
-        window, text=f"{gold_item} gold item")
-    label_elementary_combat_record = tkinter.Label(
-        window, text=f"{elementary_combat_record} elementary combat record")
-    label_intermediate_combat_record = tkinter.Label(
-        window, text=f"{intermediate_combat_record} gintermediate combat recordold")
-    label_advanced_combat_record = tkinter.Label(
-        window, text=f"{advanced_combat_record} advanced combat record")
-    label_elementary_cognitive_carrier = tkinter.Label(
-        window, text=f"{elementary_cognitive_carrier} elementary cognitive carrier")
-    label_advanced_cognitive_carrier = tkinter.Label(
-        window, text=f"{advanced_cognitive_carrier} advanced cognitive carrier")
+    mats_labels = []
 
     def forget_mats_labels():
-        label_gold.grid_forget()
-        label_protodisk.grid_forget()
-        label_protoset.grid_forget()
-        label_flower.grid_forget()
-        label_gold_item.grid_forget()
-        label_elementary_combat_record.grid_forget()
-        label_intermediate_combat_record.grid_forget()
-        label_advanced_combat_record.grid_forget()
-        label_elementary_cognitive_carrier.grid_forget()
-        label_advanced_cognitive_carrier.grid_forget()
+        nonlocal mats_labels
 
-    def reload_mats():
+        for label in mats_labels:
+            label.grid_forget()
+        mats_labels = []
 
-        initial_show_row = 1
+    def show_mats_label(row: int, value: int, name: str):
+        label = tkinter.Label(
+            window, text=f"{value} {name}")
+        label.grid(row=row, column=0, padx=100, pady=10)
+        return label
+
+    def reload_mats_labels():
+        forget_mats_labels()
+
+        character = search_character(characters_import(), character_combobox.get())
+
+        row = RESULTS_STARTING_ROW
+
+        gold = gold_from_level + gold_from_skill
         if gold != 0:
-            label_gold.config(text=f"{gold} gold")
-            label_gold.grid(row=initial_show_row, column=0, padx=100, pady=10)
+            mats_labels.append(show_mats_label(row, gold, "gold"))
 
         if protodisk != 0:
-            initial_show_row += 1
-            label_protodisk.config(text=f"{protodisk} protodisk")
-            label_protodisk.grid(row=initial_show_row, column=0, padx=100, pady=10)
+            row += 1
+            mats_labels.append(show_mats_label(row, protodisk, "protodisk"))
 
         if protoset != 0:
-            initial_show_row += 1
-            label_protoset.config(text=f"{protoset} protoset")
-            label_protoset.grid(row=initial_show_row, column=0, padx=100, pady=10)
+            row += 1
+            mats_labels.append(show_mats_label(row, protoset, "protoset"))
 
         if flower != 0:
-            initial_show_row += 1
-            label_flower.config(text=f"{flower} flower")
-            label_flower.grid(row=initial_show_row, column=0, padx=100, pady=10)
+            row += 1
+            mats_labels.append(show_mats_label(row, flower, "flower"))
 
         if gold_item != 0:
-            initial_show_row += 1
-            label_gold_item.config(text=f"{gold_item} gold item")
-            label_gold_item.grid(row=initial_show_row, column=0, padx=100, pady=10)
+            row += 1
+            mats_labels.append(show_mats_label(row, gold_item, character.gold_item_name))
 
         if elementary_combat_record != 0:
-            initial_show_row += 1
-            label_elementary_combat_record.config(text=f"{elementary_combat_record} elementary combat record")
-            label_elementary_combat_record.grid(row=initial_show_row, column=0, padx=100, pady=10)
+            row += 1
+            mats_labels.append(show_mats_label(row, elementary_combat_record, "elementary_combat_record"))
 
         if intermediate_combat_record != 0:
-            initial_show_row += 1
-            label_intermediate_combat_record.config(text=f"{intermediate_combat_record} intermediate combat recordold")
-            label_intermediate_combat_record.grid(row=initial_show_row, column=0, padx=100, pady=10)
+            row += 1
+            mats_labels.append(show_mats_label(
+                row, intermediate_combat_record, "intermediate_combat_record"))
 
         if advanced_combat_record != 0:
-            initial_show_row += 1
-            label_advanced_combat_record.config(text=f"{advanced_combat_record} advanced combat record")
-            label_advanced_combat_record.grid(row=initial_show_row, column=0, padx=100, pady=10)
+            row += 1
+            mats_labels.append(show_mats_label(
+                row, advanced_combat_record, "advanced_combat_record"))
 
         if elementary_cognitive_carrier != 0:
-            initial_show_row += 1
-            label_elementary_cognitive_carrier.config(
-                text=f"{elementary_cognitive_carrier} elementary cognitive carrier"
-            )
-            label_elementary_cognitive_carrier.grid(row=initial_show_row, column=0, padx=100, pady=10)
+            row += 1
+            mats_labels.append(show_mats_label(
+                row, elementary_cognitive_carrier, "elementary_cognitive_carrier"))
 
         if advanced_cognitive_carrier != 0:
-            initial_show_row += 1
-            label_advanced_cognitive_carrier.config(text=f"{advanced_cognitive_carrier} advanced cognitive carrier")
-            label_advanced_cognitive_carrier.grid(row=initial_show_row, column=0, padx=100, pady=10)
+            row += 1
+            mats_labels.append(show_mats_label(
+                row, advanced_cognitive_carrier, "advanced_cognitive_carrier"))
+
+        if protoprism != 0:
+            row += 1
+            mats_labels.append(show_mats_label(
+                row, protoprism, "protoprism"))
+
+        if protohedron != 0:
+            row += 1
+            mats_labels.append(show_mats_label(
+                row, protohedron, "protohedron"))
+
+        if perseverance_mask != 0:
+            row += 1
+            mats_labels.append(show_mats_label(
+                row, perseverance_mask, "perseverance_mask"))
+
+    # select a character
+
+    character_names = [character.name for character in characters_import()]
+
+    character_label = tkinter.Label(window, text="Seleziona il tuo personaggio:")
+    character_label.grid(row=CHARACTER_STARTING_ROW, column=0, padx=10, pady=10)
+
+    character_combobox = ttk.Combobox(window, values=character_names, state="readonly")
+    character_combobox.grid(row=CHARACTER_STARTING_ROW, column=1, padx=10, pady=10)
+    character_combobox.current(0)
 
     # character levels
 
     level_options = ["1", "20", "20+", "40", "40+", "60", "60+", "80", "80+", "90"]
 
     actual_level_label = tkinter.Label(window, text="Seleziona il tuo livello attuale e finale:")
-    actual_level_label.grid(row=0, column=0, padx=10, pady=10)
+    actual_level_label.grid(row=LEVEL_STARTING_ROW, column=0, padx=10, pady=10)
 
     actual_level_combobox = ttk.Combobox(window, values=level_options, state="readonly")
-    actual_level_combobox.grid(row=0, column=1, padx=10, pady=10)
+    actual_level_combobox.grid(row=LEVEL_STARTING_ROW, column=1, padx=10, pady=10)
     actual_level_combobox.current(0)
 
     final_level_label = tkinter.Label(window, text="->")
-    final_level_label.grid(row=0, column=2, padx=10, pady=10)
+    final_level_label.grid(row=LEVEL_STARTING_ROW, column=2, padx=10, pady=10)
 
     final_level_combobox = ttk.Combobox(window, values=level_options, state="readonly")
-    final_level_combobox.grid(row=0, column=3, padx=10, pady=10)
+    final_level_combobox.grid(row=LEVEL_STARTING_ROW, column=3, padx=10, pady=10)
     final_level_combobox.current(len(level_options) - 1)
 
-    def level_combobox():
-        reset_mats()
+    def levels_mats_calc():
 
         actual_level_scelta = actual_level_combobox.get()
         final_level_scelta = final_level_combobox.get()
@@ -226,11 +223,11 @@ def app():
         start_level = int(actual_level_scelta.replace("+", ""))
         final_level = int(final_level_scelta.replace("+", ""))
 
-        nonlocal gold
+        nonlocal gold_from_level
         nonlocal protodisk
         nonlocal protoset
-        nonlocal flower
-        nonlocal gold_item
+        nonlocal flower # da mettere _from_level
+        nonlocal gold_item # da mettere _from_level
         nonlocal elementary_combat_record
         nonlocal intermediate_combat_record
         nonlocal advanced_combat_record
@@ -238,94 +235,130 @@ def app():
         nonlocal advanced_cognitive_carrier
 
         if start_level == final_level and "+" not in actual_level_scelta and "+" in final_level_scelta:
-            print("just ascension")
             for ascension_level, ascension_mats in ASCENSIONS:
                 if ascension_level == start_level:
-                    gold += ascension_mats.gold
+                    gold_from_level += ascension_mats.gold
                     protodisk += ascension_mats.protodisk
                     protoset += ascension_mats.protoset
                     flower += ascension_mats.flower
                     gold_item += ascension_mats.gold_item
                     break
+        else:
+            for start_range_level, max_range_level, mats in LEVEL_RANGES:
+                # ho aggiunto i global var perché:
+                # UnboundLocalError: cannot access local variable 'gold' where it is not associated with a value
 
-        for start_range_level, max_range_level, mats in LEVEL_RANGES:
-            # ho aggiunto i global var perché:
-            # UnboundLocalError: cannot access local variable 'gold' where it is not associated with a value
+                if start_level <= start_range_level and final_level >= max_range_level:
+                    # aggiungi mats range
 
-            print(f"start for[{start_range_level}] com[{start_level}]")
-            print(f"final for[{max_range_level}] com[{final_level}]")
+                    gold_from_level += mats.gold
+                    elementary_combat_record += mats.elementary_combat_record
+                    intermediate_combat_record += mats.intermediate_combat_record
+                    advanced_combat_record += mats.advanced_combat_record
+                    elementary_cognitive_carrier += mats.elementary_cognitive_carrier
+                    advanced_cognitive_carrier += mats.advanced_cognitive_carrier
 
+                    if start_level != 1 and start_level == start_range_level and "+" not in actual_level_scelta:
+                        # aggiungi mats ascesion di start_range_level
 
-            if start_level <= start_range_level and final_level >= max_range_level:
-                # aggiungi mats range
-                print("ci piace")
+                        for ascension_level, ascension_mats in ASCENSIONS:
+                            if ascension_level == start_range_level:
+                                gold_from_level += ascension_mats.gold
+                                protodisk += ascension_mats.protodisk
+                                protoset += ascension_mats.protoset
+                                flower += ascension_mats.flower
+                                gold_item += ascension_mats.gold_item
+                                break
 
-                gold += mats.gold
-                elementary_combat_record += mats.elementary_combat_record
-                intermediate_combat_record += mats.intermediate_combat_record
-                advanced_combat_record += mats.advanced_combat_record
-                elementary_cognitive_carrier += mats.elementary_cognitive_carrier
-                advanced_cognitive_carrier += mats.advanced_cognitive_carrier
+                    if final_level == max_range_level and "+" in final_level_scelta:
+                        # aggiungi mats ascension di max_range_level
 
-                if start_level != 1 and start_level == start_range_level and "+" not in actual_level_scelta:
-                    # aggiungi mats ascesion di start_range_level
-                    print("start ascension")
+                        for ascension_level, ascension_mats in ASCENSIONS:
+                            if ascension_level == max_range_level:
+                                gold_from_level += ascension_mats.gold
+                                protodisk += ascension_mats.protodisk
+                                protoset += ascension_mats.protoset
+                                flower += ascension_mats.flower
+                                gold_item += ascension_mats.gold_item
+                                break
 
-                    for ascension_level, ascension_mats in ASCENSIONS:
-                        if ascension_level == start_range_level:
-                            gold += ascension_mats.gold
-                            protodisk += ascension_mats.protodisk
-                            protoset += ascension_mats.protoset
-                            flower += ascension_mats.flower
-                            gold_item += ascension_mats.gold_item
-                            break
+                    if start_level < start_range_level:
+                        # aggiungi mats ascension di start_range_vel
 
-                if final_level == max_range_level and "+" in final_level_scelta:
-                    # aggiungi mats ascension di max_range_level
-                    print("final ascension")
-
-                    for ascension_level, ascension_mats in ASCENSIONS:
-                        if ascension_level == max_range_level:
-                            gold += ascension_mats.gold
-                            protodisk += ascension_mats.protodisk
-                            protoset += ascension_mats.protoset
-                            flower += ascension_mats.flower
-                            gold_item += ascension_mats.gold_item
-                            break
-
-                if start_level < start_range_level:
-                    # aggiungi mats ascension di start_range_vel
-                    print("mid ascension")
-
-                    for ascension_level, ascension_mats in ASCENSIONS:
-                        if ascension_level == start_range_level:
-                            gold += ascension_mats.gold
-                            protodisk += ascension_mats.protodisk
-                            protoset += ascension_mats.protoset
-                            flower += ascension_mats.flower
-                            gold_item += ascension_mats.gold_item
-                            break
-            print()
-        print("-------------")
-        forget_mats_labels()
-        reload_mats()
-
-    # actual_level_combobox.bind("<<ComboboxSelected>>", level_combobox)
-    # final_level_combobox.bind("<<ComboboxSelected>>", level_combobox)
-
-    level_button = ttk.Button(window, text="Seleziona", command=level_combobox)
-    level_button.grid(row=0, column=4, padx=10, pady=10)
+                        for ascension_level, ascension_mats in ASCENSIONS:
+                            if ascension_level == start_range_level:
+                                gold_from_level += ascension_mats.gold
+                                protodisk += ascension_mats.protodisk
+                                protoset += ascension_mats.protoset
+                                flower += ascension_mats.flower
+                                gold_item += ascension_mats.gold_item
+                                break
 
     # skills
 
-    # talents
+    skill_option = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] # si potrebbe fare un generator (non so se è utile)
+
+    initial_skill_row = SKILLS_STARTING_ROW
+    actual_skill_labels = []
+    final_skill_labels = []
+    skill_comboboxes = []
+
+    # inizializzazione skill labels e comboboxes
+    for i in range(4):
+        actual_skill_label = tkinter.Label(window, text=f"Skill {i + 1}:")
+        actual_skill_label.grid(row=(initial_skill_row + i), column=0, padx=10, pady=10)
+        actual_skill_labels.append(actual_skill_label)
+
+        actual_skill_combobox = ttk.Combobox(window, values=skill_option, state="readonly")
+        actual_skill_combobox.grid(row=(initial_skill_row + i), column=1, padx= 10, pady=10)
+        actual_skill_combobox.current(0)
+
+        final_skill_label = tkinter.Label(window, text="->")
+        final_skill_label.grid(row=(initial_skill_row + i), column=2, padx=10, pady=10)
+        final_skill_labels.append(final_skill_label)
+
+        final_skill_combobox = ttk.Combobox(window, values=skill_option, state="readonly")
+        final_skill_combobox.grid(row=(initial_skill_row + i), column=3, padx= 10, pady=10)
+        final_skill_combobox.current(len(skill_option) - 1)
+
+        skill_comboboxes.append((actual_skill_combobox, final_skill_combobox))
+
+    def skills_mats_calc():
+        nonlocal gold_from_skill
+        nonlocal protoprism
+        nonlocal protohedron
+        nonlocal flower # da mettere _from_skill
+        nonlocal perseverance_mask
+        nonlocal gold_item # da mettere _from_skill
+
+        for start_skill_combobox, final_skill_combobox in skill_comboboxes:
+            start_skill = start_skill_combobox.get()
+            final_skill = final_skill_combobox.get()
+
+            for i in range(int(start_skill) - 1, int(final_skill) - 1):
+                gold_from_skill += SKILLS[i].gold
+                protoprism += SKILLS[i].protoprism
+                protohedron += SKILLS[i].protohedron
+                flower += SKILLS[i].flower
+                perseverance_mask += SKILLS[i].perseverance_mask
+                gold_item += SKILLS[i].gold_item
 
     # show on screen
 
-    reload_mats()
+    def do_all_calculations():
+        reset_mats()
+
+        levels_mats_calc()
+        skills_mats_calc()
+
+        reload_mats_labels()
+
+    level_button = ttk.Button(window, text="Calcola", command=do_all_calculations)
+    level_button.grid(row=CALC_BUTTON_ROW, column=0, padx=10, pady=10)
+
+    reload_mats_labels()
 
     window.mainloop()
 
 if __name__ == "__main__":
-    # main()
     app()
