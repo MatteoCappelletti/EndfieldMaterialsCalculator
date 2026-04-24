@@ -165,7 +165,8 @@ def app():
             row += 1
 
         if basetier_flower != 0:
-            mats_labels.append(show_mats_label(results_window, row, basetier_flower, f"{character.basetier_flower_name}"))
+            mats_labels.append(show_mats_label(
+                results_window, row, basetier_flower, f"{character.basetier_flower_name}"))
             row += 1
 
         if lowtier_flower != 0:
@@ -177,11 +178,13 @@ def app():
             row += 1
 
         if hightier_flower != 0:
-            mats_labels.append(show_mats_label(results_window, row, hightier_flower, f"{character.hightier_flower_name}"))
+            mats_labels.append(show_mats_label(
+                results_window, row, hightier_flower, f"{character.hightier_flower_name}"))
             row += 1
 
         if level_gold_item != 0:
-            mats_labels.append(show_mats_label(results_window, row, level_gold_item, f"{character.level_gold_item_name}"))
+            mats_labels.append(show_mats_label(
+                results_window, row, level_gold_item, f"{character.level_gold_item_name}"))
             row += 1
 
         if elementary_combat_record != 0:
@@ -225,11 +228,13 @@ def app():
             row += 1
 
         if skill_gold_item != 0:
-            mats_labels.append(show_mats_label(results_window, row, skill_gold_item, f"{character.skill_gold_item_name}"))
+            mats_labels.append(show_mats_label(
+                results_window, row, skill_gold_item, f"{character.skill_gold_item_name}"))
             row += 1
 
         if basetier_branch != 0:
-            mats_labels.append(show_mats_label(results_window, row, basetier_branch, f"{character.basetier_branch_name}"))
+            mats_labels.append(show_mats_label(
+                results_window, row, basetier_branch, f"{character.basetier_branch_name}"))
             row += 1
 
         if lowtier_branch != 0:
@@ -241,7 +246,9 @@ def app():
             row += 1
 
         if hightier_branch != 0:
-            mats_labels.append(show_mats_label(results_window, row, hightier_branch, f"{character.hightier_branch_name}"))
+            mats_labels.append(show_mats_label(
+                results_window, row, hightier_branch, f"{character.hightier_branch_name}"))
+            row += 1
 
     # vertical label
 
