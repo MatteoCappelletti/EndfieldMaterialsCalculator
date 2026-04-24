@@ -153,95 +153,95 @@ def app():
 
         gold = gold_from_level + gold_from_skill
         if gold != 0:
-            mats_labels.append(show_mats_label(results_window, row, gold, "gold"))
+            mats_labels.append(show_mats_label(results_window, row, gold, "Gold"))
             row += 1
 
         if protodisk != 0:
-            mats_labels.append(show_mats_label(results_window, row, protodisk, "protodisk"))
+            mats_labels.append(show_mats_label(results_window, row, protodisk, "Protodisk"))
             row += 1
 
         if protoset != 0:
-            mats_labels.append(show_mats_label(results_window, row, protoset, "protoset"))
+            mats_labels.append(show_mats_label(results_window, row, protoset, "Protoset"))
             row += 1
 
         if basetier_flower != 0:
-            mats_labels.append(show_mats_label(results_window, row, basetier_flower, character.basetier_flower_name))
+            mats_labels.append(show_mats_label(results_window, row, basetier_flower, f"{character.basetier_flower_name}"))
             row += 1
 
         if lowtier_flower != 0:
-            mats_labels.append(show_mats_label(results_window, row, lowtier_flower, character.lowtier_flower_name))
+            mats_labels.append(show_mats_label(results_window, row, lowtier_flower, f"{character.lowtier_flower_name}"))
             row += 1
 
         if midtier_flower != 0:
-            mats_labels.append(show_mats_label(results_window, row, midtier_flower, character.midtier_flower_name))
+            mats_labels.append(show_mats_label(results_window, row, midtier_flower, f"{character.midtier_flower_name}"))
             row += 1
 
         if hightier_flower != 0:
-            mats_labels.append(show_mats_label(results_window, row, hightier_flower, character.hightier_flower_name))
+            mats_labels.append(show_mats_label(results_window, row, hightier_flower, f"{character.hightier_flower_name}"))
             row += 1
 
         if level_gold_item != 0:
-            mats_labels.append(show_mats_label(results_window, row, level_gold_item, character.level_gold_item_name))
+            mats_labels.append(show_mats_label(results_window, row, level_gold_item, f"{character.level_gold_item_name}"))
             row += 1
 
         if elementary_combat_record != 0:
             mats_labels.append(show_mats_label(
-                results_window, row, elementary_combat_record, "elementary_combat_record"))
+                results_window, row, elementary_combat_record, "Elementary Combat Record"))
             row += 1
 
         if intermediate_combat_record != 0:
             mats_labels.append(show_mats_label(
-                results_window, row, intermediate_combat_record, "intermediate_combat_record"))
+                results_window, row, intermediate_combat_record, "Intermediate Combat Record"))
             row += 1
 
         if advanced_combat_record != 0:
             mats_labels.append(show_mats_label(
-                results_window, row, advanced_combat_record, "advanced_combat_record"))
+                results_window, row, advanced_combat_record, "Advanced Combat Record"))
             row += 1
 
         if elementary_cognitive_carrier != 0:
             mats_labels.append(show_mats_label(
-                results_window, row, elementary_cognitive_carrier, "elementary_cognitive_carrier"))
+                results_window, row, elementary_cognitive_carrier, "Elementary Cognitive Carrier"))
             row += 1
 
         if advanced_cognitive_carrier != 0:
             mats_labels.append(show_mats_label(
-                results_window, row, advanced_cognitive_carrier, "advanced_cognitive_carrier"))
+                results_window, row, advanced_cognitive_carrier, "Advanced Cognitive Carrier"))
             row += 1
 
         if protoprism != 0:
             mats_labels.append(show_mats_label(
-                results_window, row, protoprism, "protoprism"))
+                results_window, row, protoprism, "Protoprism"))
             row += 1
 
         if protohedron != 0:
             mats_labels.append(show_mats_label(
-                results_window, row, protohedron, "protohedron"))
+                results_window, row, protohedron, "Protohedron"))
             row += 1
 
         if perseverance_mask != 0:
             mats_labels.append(show_mats_label(
-                results_window, row, perseverance_mask, "perseverance_mask"))
+                results_window, row, perseverance_mask, "Perseverance Mask"))
             row += 1
 
         if skill_gold_item != 0:
-            mats_labels.append(show_mats_label(results_window, row, skill_gold_item, character.skill_gold_item_name))
+            mats_labels.append(show_mats_label(results_window, row, skill_gold_item, f"{character.skill_gold_item_name}"))
             row += 1
 
         if basetier_branch != 0:
-            mats_labels.append(show_mats_label(results_window, row, basetier_branch, character.basetier_branch_name))
+            mats_labels.append(show_mats_label(results_window, row, basetier_branch, f"{character.basetier_branch_name}"))
             row += 1
 
         if lowtier_branch != 0:
-            mats_labels.append(show_mats_label(results_window, row, lowtier_branch, character.lowtier_branch_name))
+            mats_labels.append(show_mats_label(results_window, row, lowtier_branch, f"{character.lowtier_branch_name}"))
             row += 1
 
         if midtier_branch != 0:
-            mats_labels.append(show_mats_label(results_window, row, midtier_branch, character.midtier_branch_name))
+            mats_labels.append(show_mats_label(results_window, row, midtier_branch, f"{character.midtier_branch_name}"))
             row += 1
 
         if hightier_branch != 0:
-            mats_labels.append(show_mats_label(results_window, row, hightier_branch, character.hightier_branch_name))
+            mats_labels.append(show_mats_label(results_window, row, hightier_branch, f"{character.hightier_branch_name}"))
 
     # vertical label
 
