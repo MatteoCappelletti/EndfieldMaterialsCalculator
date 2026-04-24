@@ -24,13 +24,14 @@ def characters_import() -> list:
                 lowtier_branch_name = line["lowtier_branch_name"]
                 midtier_branch_name = line["midtier_branch_name"]
                 hightier_branch_name = line["hightier_branch_name"]
-                gold_item_name = line["gold_item_name"]
+                level_gold_item_name = line["level_gold_item_name"]
+                skill_gold_item_name = line["skill_gold_item_name"]
 
                 character = Character(
                     name, rarity,
                     basetier_flower_name, lowtier_flower_name, midtier_flower_name, hightier_flower_name,
                     basetier_branch_name, lowtier_branch_name, midtier_branch_name, hightier_branch_name,
-                    gold_item_name
+                    level_gold_item_name, skill_gold_item_name
                 )
                 characters.append(character)
             except IndexError:
@@ -45,10 +46,11 @@ def search_character(characters: list, name: str) -> Character:
 
 def app():
     CHARACTER_STARTING_ROW = 0  # 1 riga richiesta
-    LEVEL_STARTING_ROW = 1      # 1
-    SKILLS_STARTING_ROW = 2     # 4
-    CALC_BUTTON_ROW = 6         # 1
-    RESULTS_STARTING_ROW = 7    # N calcolato
+    VERTICAL_LABEL_ROW = 1      # 1 riga richiesta
+    LEVEL_STARTING_ROW = 2      # 1
+    SKILLS_STARTING_ROW = 3     # 4
+    CALC_BUTTON_ROW = 7         # 1
+    RESULTS_STARTING_ROW = 8    # N calcolato
 
     window = tkinter.Tk()
     window.title("Endfield Mats Calculator")
@@ -62,7 +64,8 @@ def app():
     protodisk = 0
     protoset = 0
     flower = 0
-    gold_item = 0
+    level_gold_item = 0
+    skill_gold_item = 0
     elementary_combat_record = 0
     intermediate_combat_record = 0
     advanced_combat_record = 0
@@ -78,7 +81,8 @@ def app():
         nonlocal protodisk
         nonlocal protoset
         nonlocal flower
-        nonlocal gold_item
+        nonlocal level_gold_item
+        nonlocal skill_gold_item
         nonlocal elementary_combat_record
         nonlocal intermediate_combat_record
         nonlocal advanced_combat_record
@@ -93,7 +97,8 @@ def app():
         protodisk = 0
         protoset = 0
         flower = 0
-        gold_item = 0
+        level_gold_item = 0
+        skill_gold_item = 0
         elementary_combat_record = 0
         intermediate_combat_record = 0
         advanced_combat_record = 0
@@ -143,9 +148,9 @@ def app():
             row += 1
             mats_labels.append(show_mats_label(row, flower, "flower"))
 
-        if gold_item != 0:
+        if level_gold_item != 0:
             row += 1
-            mats_labels.append(show_mats_label(row, gold_item, character.gold_item_name))
+            mats_labels.append(show_mats_label(row, level_gold_item, character.level_gold_item_name))
 
         if elementary_combat_record != 0:
             row += 1
@@ -185,6 +190,18 @@ def app():
             row += 1
             mats_labels.append(show_mats_label(
                 row, perseverance_mask, "perseverance_mask"))
+        
+        if skill_gold_item != 0:
+            row += 1
+            mats_labels.append(show_mats_label(row, skill_gold_item, character.skill_gold_item_name))
+
+    # vertical label
+
+    vertical_label = tkinter.Label(window, text="Livello iniziale")
+    vertical_label.grid(row=VERTICAL_LABEL_ROW, column=1, padx=10, pady=10)
+
+    vertical_label = tkinter.Label(window, text="Livello finale")
+    vertical_label.grid(row=VERTICAL_LABEL_ROW, column=3, padx=10, pady=10)
 
     # select a character
 
@@ -227,7 +244,7 @@ def app():
         nonlocal protodisk
         nonlocal protoset
         nonlocal flower # da mettere _from_level
-        nonlocal gold_item # da mettere _from_level
+        nonlocal level_gold_item # da mettere _from_level
         nonlocal elementary_combat_record
         nonlocal intermediate_combat_record
         nonlocal advanced_combat_record
@@ -241,7 +258,7 @@ def app():
                     protodisk += ascension_mats.protodisk
                     protoset += ascension_mats.protoset
                     flower += ascension_mats.flower
-                    gold_item += ascension_mats.gold_item
+                    level_gold_item += ascension_mats.gold_item
                     break
         else:
             for start_range_level, max_range_level, mats in LEVEL_RANGES:
@@ -267,7 +284,7 @@ def app():
                                 protodisk += ascension_mats.protodisk
                                 protoset += ascension_mats.protoset
                                 flower += ascension_mats.flower
-                                gold_item += ascension_mats.gold_item
+                                level_gold_item += ascension_mats.gold_item
                                 break
 
                     if final_level == max_range_level and "+" in final_level_scelta:
@@ -279,11 +296,11 @@ def app():
                                 protodisk += ascension_mats.protodisk
                                 protoset += ascension_mats.protoset
                                 flower += ascension_mats.flower
-                                gold_item += ascension_mats.gold_item
+                                level_gold_item += ascension_mats.gold_item
                                 break
 
                     if start_level < start_range_level:
-                        # aggiungi mats ascension di start_range_vel
+                        # aggiungi mats ascension di start_range_level
 
                         for ascension_level, ascension_mats in ASCENSIONS:
                             if ascension_level == start_range_level:
@@ -291,12 +308,14 @@ def app():
                                 protodisk += ascension_mats.protodisk
                                 protoset += ascension_mats.protoset
                                 flower += ascension_mats.flower
-                                gold_item += ascension_mats.gold_item
+                                level_gold_item += ascension_mats.gold_item
                                 break
 
     # skills
 
-    skill_option = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] # si potrebbe fare un generator (non so se è utile)
+    skill_option = []
+    for i in range(len(SKILLS) + 1):
+        skill_option.append(i + 1)
 
     initial_skill_row = SKILLS_STARTING_ROW
     actual_skill_labels = []
@@ -329,7 +348,7 @@ def app():
         nonlocal protohedron
         nonlocal flower # da mettere _from_skill
         nonlocal perseverance_mask
-        nonlocal gold_item # da mettere _from_skill
+        nonlocal skill_gold_item # da mettere _from_skill
 
         for start_skill_combobox, final_skill_combobox in skill_comboboxes:
             start_skill = start_skill_combobox.get()
@@ -341,7 +360,7 @@ def app():
                 protohedron += SKILLS[i].protohedron
                 flower += SKILLS[i].flower
                 perseverance_mask += SKILLS[i].perseverance_mask
-                gold_item += SKILLS[i].gold_item
+                skill_gold_item += SKILLS[i].gold_item
 
     # show on screen
 

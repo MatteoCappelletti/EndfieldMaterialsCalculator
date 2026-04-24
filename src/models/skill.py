@@ -4,7 +4,7 @@ class Skill:
     protoprism: int
     protohedron: int
 
-    flower: int
+    flower: int # non è fiore, è branch
 
     perseverance_mask: int
 

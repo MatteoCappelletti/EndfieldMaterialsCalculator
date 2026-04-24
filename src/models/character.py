@@ -12,13 +12,14 @@ class Character:
     midtier_branch_name: str
     hightier_branch_name: str
 
-    gold_item_name: str
+    level_gold_item_name: str
+    skill_gold_item_name: str
 
     def __init__(
             self, name, rarity, 
             basetier_flower_name, lowtier_flower_name, midtier_flower_name, hightier_flower_name,
             basetier_branch_name, lowtier_branch_name, midtier_branch_name, hightier_branch_name,
-            gold_item_name
+            level_gold_item_name, skill_gold_item_name
         ):
         self.name = name
         self.rarity = rarity
@@ -30,7 +31,5 @@ class Character:
         self.lowtier_branch_name = lowtier_branch_name
         self.midtier_branch_name = midtier_branch_name
         self.hightier_branch_name = hightier_branch_name
-        self.gold_item_name = gold_item_name
-
-    def __str__(self):
-        return f"[{self.name}][{self.rarity}]\n- [{self.basetier_flower_name}]\n- [{self.basetier_branch_name}]"
+        self.level_gold_item_name = level_gold_item_name
+        self.skill_gold_item_name = skill_gold_item_name
