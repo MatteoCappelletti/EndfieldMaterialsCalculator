@@ -5,7 +5,6 @@ from models.character import Character
 from models.ascension import ASCENSIONS
 from models.levelrange import LEVEL_RANGES
 from models.skill import SKILLS
-# from models.talent import COMBAT_TALENTS, SPACESHIP_TALENTS
 
 def characters_import() -> list:
 
@@ -45,16 +44,16 @@ def search_character(characters: list, name: str) -> Character:
     return None
 
 def app():
+    # pylint: disable=invalid-name
     CHARACTER_STARTING_ROW = 0  # 1 riga richiesta
-    VERTICAL_LABEL_ROW = 1      # 1 
+    VERTICAL_LABEL_ROW = 1      # 1
     LEVEL_STARTING_ROW = 2      # 1
     SKILLS_STARTING_ROW = 3     # 4
     CALC_BUTTON_ROW = 7         # 1
 
     window = tkinter.Tk()
     window.title("Endfield Mats Calculator")
-    window.geometry("1600x1000")
-    window.columnconfigure(0, weight=1)
+    window.geometry("800x500")
 
     # all mats variables
 
@@ -150,14 +149,11 @@ def app():
         nonlocal results_window
 
         if results_window is not None:
-            try:
-                results_window.destroy()
-            except:
-                pass
+            results_window.destroy()
 
         results_window = tkinter.Toplevel(window)
         results_window.title("Materiali necessari")
-        results_window.geometry("600x800")
+        results_window.geometry("600x900")
 
         character = search_character(characters_import(), character_combobox.get())
 
