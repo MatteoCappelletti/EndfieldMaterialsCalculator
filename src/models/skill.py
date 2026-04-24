@@ -44,5 +44,5 @@ SKILLS = [
 #   - protoprism
 #   - protohedron
 #   - flower (variable)
-#   - perseverance mark (variable)
+#   - perseverance mark
 #   - 5* item (variable)

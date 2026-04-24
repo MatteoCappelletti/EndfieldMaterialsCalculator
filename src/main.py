@@ -132,16 +132,8 @@ def app():
     mats_labels = []
     results_window = None
 
-    def forget_mats_labels():
-        nonlocal mats_labels
-
-        for label in mats_labels:
-            label.grid_forget()
-        mats_labels = []
-
     def show_mats_label(parent, row: int, value: int, name: str):
-        label = tkinter.Label(
-            parent, text=f"{value} {name}")
+        label = tkinter.Label(parent, text=f"{value} {name}")
         label.grid(row=row, column=0, padx=100, pady=10, sticky="w")
         return label
 
