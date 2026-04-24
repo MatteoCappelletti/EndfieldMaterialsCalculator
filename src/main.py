@@ -46,11 +46,10 @@ def search_character(characters: list, name: str) -> Character:
 
 def app():
     CHARACTER_STARTING_ROW = 0  # 1 riga richiesta
-    VERTICAL_LABEL_ROW = 1      # 1 riga richiesta
+    VERTICAL_LABEL_ROW = 1      # 1 
     LEVEL_STARTING_ROW = 2      # 1
     SKILLS_STARTING_ROW = 3     # 4
     CALC_BUTTON_ROW = 7         # 1
-    RESULTS_STARTING_ROW = 8    # N calcolato
 
     window = tkinter.Tk()
     window.title("Endfield Mats Calculator")
@@ -63,7 +62,10 @@ def app():
     gold_from_skill = 0
     protodisk = 0
     protoset = 0
-    flower = 0
+    basetier_flower = 0
+    lowtier_flower = 0
+    midtier_flower = 0
+    hightier_flower = 0
     level_gold_item = 0
     skill_gold_item = 0
     elementary_combat_record = 0
@@ -74,13 +76,20 @@ def app():
     protoprism = 0
     protohedron = 0
     perseverance_mask = 0
+    basetier_branch = 0
+    lowtier_branch = 0
+    midtier_branch = 0
+    hightier_branch = 0
 
     def reset_mats():
         nonlocal gold_from_level
         nonlocal gold_from_skill
         nonlocal protodisk
         nonlocal protoset
-        nonlocal flower
+        nonlocal basetier_flower
+        nonlocal lowtier_flower
+        nonlocal midtier_flower
+        nonlocal hightier_flower
         nonlocal level_gold_item
         nonlocal skill_gold_item
         nonlocal elementary_combat_record
@@ -91,12 +100,19 @@ def app():
         nonlocal protoprism
         nonlocal protohedron
         nonlocal perseverance_mask
+        nonlocal basetier_branch
+        nonlocal lowtier_branch
+        nonlocal midtier_branch
+        nonlocal hightier_branch
 
         gold_from_level = 0
         gold_from_skill = 0
         protodisk = 0
         protoset = 0
-        flower = 0
+        basetier_flower = 0
+        lowtier_flower = 0
+        midtier_flower = 0
+        hightier_flower = 0
         level_gold_item = 0
         skill_gold_item = 0
         elementary_combat_record = 0
@@ -107,10 +123,15 @@ def app():
         protoprism = 0
         protohedron = 0
         perseverance_mask = 0
+        basetier_branch = 0
+        lowtier_branch = 0
+        midtier_branch = 0
+        hightier_branch = 0
 
     # mats labels
 
     mats_labels = []
+    results_window = None
 
     def forget_mats_labels():
         nonlocal mats_labels
@@ -119,81 +140,120 @@ def app():
             label.grid_forget()
         mats_labels = []
 
-    def show_mats_label(row: int, value: int, name: str):
+    def show_mats_label(parent, row: int, value: int, name: str):
         label = tkinter.Label(
-            window, text=f"{value} {name}")
-        label.grid(row=row, column=0, padx=100, pady=10)
+            parent, text=f"{value} {name}")
+        label.grid(row=row, column=0, padx=100, pady=10, sticky="w")
         return label
 
     def reload_mats_labels():
-        forget_mats_labels()
+        nonlocal results_window
+
+        if results_window is not None:
+            try:
+                results_window.destroy()
+            except:
+                pass
+
+        results_window = tkinter.Toplevel(window)
+        results_window.title("Materiali necessari")
+        results_window.geometry("600x800")
 
         character = search_character(characters_import(), character_combobox.get())
 
-        row = RESULTS_STARTING_ROW
+        row = 0
 
         gold = gold_from_level + gold_from_skill
         if gold != 0:
-            mats_labels.append(show_mats_label(row, gold, "gold"))
+            mats_labels.append(show_mats_label(results_window, row, gold, "gold"))
+            row += 1
 
         if protodisk != 0:
+            mats_labels.append(show_mats_label(results_window, row, protodisk, "protodisk"))
             row += 1
-            mats_labels.append(show_mats_label(row, protodisk, "protodisk"))
 
         if protoset != 0:
+            mats_labels.append(show_mats_label(results_window, row, protoset, "protoset"))
             row += 1
-            mats_labels.append(show_mats_label(row, protoset, "protoset"))
 
-        if flower != 0:
+        if basetier_flower != 0:
+            mats_labels.append(show_mats_label(results_window, row, basetier_flower, character.basetier_flower_name))
             row += 1
-            mats_labels.append(show_mats_label(row, flower, "flower"))
+
+        if lowtier_flower != 0:
+            mats_labels.append(show_mats_label(results_window, row, lowtier_flower, character.lowtier_flower_name))
+            row += 1
+
+        if midtier_flower != 0:
+            mats_labels.append(show_mats_label(results_window, row, midtier_flower, character.midtier_flower_name))
+            row += 1
+
+        if hightier_flower != 0:
+            mats_labels.append(show_mats_label(results_window, row, hightier_flower, character.hightier_flower_name))
+            row += 1
 
         if level_gold_item != 0:
+            mats_labels.append(show_mats_label(results_window, row, level_gold_item, character.level_gold_item_name))
             row += 1
-            mats_labels.append(show_mats_label(row, level_gold_item, character.level_gold_item_name))
 
         if elementary_combat_record != 0:
+            mats_labels.append(show_mats_label(
+                results_window, row, elementary_combat_record, "elementary_combat_record"))
             row += 1
-            mats_labels.append(show_mats_label(row, elementary_combat_record, "elementary_combat_record"))
 
         if intermediate_combat_record != 0:
-            row += 1
             mats_labels.append(show_mats_label(
-                row, intermediate_combat_record, "intermediate_combat_record"))
+                results_window, row, intermediate_combat_record, "intermediate_combat_record"))
+            row += 1
 
         if advanced_combat_record != 0:
-            row += 1
             mats_labels.append(show_mats_label(
-                row, advanced_combat_record, "advanced_combat_record"))
+                results_window, row, advanced_combat_record, "advanced_combat_record"))
+            row += 1
 
         if elementary_cognitive_carrier != 0:
-            row += 1
             mats_labels.append(show_mats_label(
-                row, elementary_cognitive_carrier, "elementary_cognitive_carrier"))
+                results_window, row, elementary_cognitive_carrier, "elementary_cognitive_carrier"))
+            row += 1
 
         if advanced_cognitive_carrier != 0:
-            row += 1
             mats_labels.append(show_mats_label(
-                row, advanced_cognitive_carrier, "advanced_cognitive_carrier"))
+                results_window, row, advanced_cognitive_carrier, "advanced_cognitive_carrier"))
+            row += 1
 
         if protoprism != 0:
-            row += 1
             mats_labels.append(show_mats_label(
-                row, protoprism, "protoprism"))
+                results_window, row, protoprism, "protoprism"))
+            row += 1
 
         if protohedron != 0:
-            row += 1
             mats_labels.append(show_mats_label(
-                row, protohedron, "protohedron"))
+                results_window, row, protohedron, "protohedron"))
+            row += 1
 
         if perseverance_mask != 0:
-            row += 1
             mats_labels.append(show_mats_label(
-                row, perseverance_mask, "perseverance_mask"))
-        
-        if skill_gold_item != 0:
+                results_window, row, perseverance_mask, "perseverance_mask"))
             row += 1
-            mats_labels.append(show_mats_label(row, skill_gold_item, character.skill_gold_item_name))
+
+        if skill_gold_item != 0:
+            mats_labels.append(show_mats_label(results_window, row, skill_gold_item, character.skill_gold_item_name))
+            row += 1
+
+        if basetier_branch != 0:
+            mats_labels.append(show_mats_label(results_window, row, basetier_branch, character.basetier_branch_name))
+            row += 1
+
+        if lowtier_branch != 0:
+            mats_labels.append(show_mats_label(results_window, row, lowtier_branch, character.lowtier_branch_name))
+            row += 1
+
+        if midtier_branch != 0:
+            mats_labels.append(show_mats_label(results_window, row, midtier_branch, character.midtier_branch_name))
+            row += 1
+
+        if hightier_branch != 0:
+            mats_labels.append(show_mats_label(results_window, row, hightier_branch, character.hightier_branch_name))
 
     # vertical label
 
@@ -218,7 +278,7 @@ def app():
 
     level_options = ["1", "20", "20+", "40", "40+", "60", "60+", "80", "80+", "90"]
 
-    actual_level_label = tkinter.Label(window, text="Seleziona il tuo livello attuale e finale:")
+    actual_level_label = tkinter.Label(window, text="Livello personaggio:")
     actual_level_label.grid(row=LEVEL_STARTING_ROW, column=0, padx=10, pady=10)
 
     actual_level_combobox = ttk.Combobox(window, values=level_options, state="readonly")
@@ -243,8 +303,11 @@ def app():
         nonlocal gold_from_level
         nonlocal protodisk
         nonlocal protoset
-        nonlocal flower # da mettere _from_level
-        nonlocal level_gold_item # da mettere _from_level
+        nonlocal basetier_flower
+        nonlocal lowtier_flower
+        nonlocal midtier_flower
+        nonlocal hightier_flower
+        nonlocal level_gold_item
         nonlocal elementary_combat_record
         nonlocal intermediate_combat_record
         nonlocal advanced_combat_record
@@ -257,7 +320,10 @@ def app():
                     gold_from_level += ascension_mats.gold
                     protodisk += ascension_mats.protodisk
                     protoset += ascension_mats.protoset
-                    flower += ascension_mats.flower
+                    basetier_flower += ascension_mats.basetier_flower
+                    lowtier_flower += ascension_mats.lowtier_flower
+                    midtier_flower += ascension_mats.middtier_flower
+                    hightier_flower += ascension_mats.hightier_flower
                     level_gold_item += ascension_mats.gold_item
                     break
         else:
@@ -283,7 +349,10 @@ def app():
                                 gold_from_level += ascension_mats.gold
                                 protodisk += ascension_mats.protodisk
                                 protoset += ascension_mats.protoset
-                                flower += ascension_mats.flower
+                                basetier_flower += ascension_mats.basetier_flower
+                                lowtier_flower += ascension_mats.lowtier_flower
+                                midtier_flower += ascension_mats.middtier_flower
+                                hightier_flower += ascension_mats.hightier_flower
                                 level_gold_item += ascension_mats.gold_item
                                 break
 
@@ -295,7 +364,10 @@ def app():
                                 gold_from_level += ascension_mats.gold
                                 protodisk += ascension_mats.protodisk
                                 protoset += ascension_mats.protoset
-                                flower += ascension_mats.flower
+                                basetier_flower += ascension_mats.basetier_flower
+                                lowtier_flower += ascension_mats.lowtier_flower
+                                midtier_flower += ascension_mats.middtier_flower
+                                hightier_flower += ascension_mats.hightier_flower
                                 level_gold_item += ascension_mats.gold_item
                                 break
 
@@ -307,7 +379,10 @@ def app():
                                 gold_from_level += ascension_mats.gold
                                 protodisk += ascension_mats.protodisk
                                 protoset += ascension_mats.protoset
-                                flower += ascension_mats.flower
+                                basetier_flower += ascension_mats.basetier_flower
+                                lowtier_flower += ascension_mats.lowtier_flower
+                                midtier_flower += ascension_mats.middtier_flower
+                                hightier_flower += ascension_mats.hightier_flower
                                 level_gold_item += ascension_mats.gold_item
                                 break
 
@@ -346,9 +421,12 @@ def app():
         nonlocal gold_from_skill
         nonlocal protoprism
         nonlocal protohedron
-        nonlocal flower # da mettere _from_skill
+        nonlocal basetier_branch
+        nonlocal lowtier_branch
+        nonlocal midtier_branch
+        nonlocal hightier_branch
         nonlocal perseverance_mask
-        nonlocal skill_gold_item # da mettere _from_skill
+        nonlocal skill_gold_item
 
         for start_skill_combobox, final_skill_combobox in skill_comboboxes:
             start_skill = start_skill_combobox.get()
@@ -358,7 +436,10 @@ def app():
                 gold_from_skill += SKILLS[i].gold
                 protoprism += SKILLS[i].protoprism
                 protohedron += SKILLS[i].protohedron
-                flower += SKILLS[i].flower
+                basetier_branch += SKILLS[i].basetier_branch
+                lowtier_branch += SKILLS[i].lowtier_branch
+                midtier_branch += SKILLS[i].midtier_branch
+                hightier_branch += SKILLS[i].hightier_branch
                 perseverance_mask += SKILLS[i].perseverance_mask
                 skill_gold_item += SKILLS[i].gold_item
 
@@ -374,8 +455,6 @@ def app():
 
     level_button = ttk.Button(window, text="Calcola", command=do_all_calculations)
     level_button.grid(row=CALC_BUTTON_ROW, column=0, padx=10, pady=10)
-
-    reload_mats_labels()
 
     window.mainloop()
 
